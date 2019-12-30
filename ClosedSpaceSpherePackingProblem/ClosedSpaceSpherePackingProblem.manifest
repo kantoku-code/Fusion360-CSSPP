@@ -1,0 +1,13 @@
+{
+	"autodeskProduct":	"Fusion360",
+	"type":	"addin",
+	"id":	"68177ab1-cbfc-456b-850d-d37a292b514d",
+	"author":	"kantoku",
+	"description":	{
+		"":	"Closed Space Sphere Packing Problem"
+	},
+	"version":	"0.0.1",
+	"runOnStartup":	false,
+	"supportedOS":	"windows|mac",
+	"editEnabled":	true
+}
