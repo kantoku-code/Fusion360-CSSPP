@@ -1,6 +1,6 @@
-# FusionAPI_python Addin ContactCheck var0.0.1
+# FusionAPI_python Addin ContactCheck var0.0.2
 # Author-kantoku
-# Description-
+# Description-接触チェック
 
 import adsk.core, adsk.fusion, traceback
 from .Fusion360Utilities.Fusion360CommandBase import Fusion360CommandBase
@@ -13,7 +13,7 @@ class ContactCheck(Fusion360CommandBase):
 import adsk.core, adsk.fusion, traceback
 import math
 
-_tolerance = 0
+_tolerance = 0.01
 class ContactFactry():
     def __init__(self):
         pass
@@ -28,7 +28,7 @@ class ContactFactry():
 
             # 確認用トレランス設定
             global _tolerance
-            _tolerance = self.unitConv(0.01)
+            _tolerance = self.unitConv(_tolerance)
 
             # 拡張
             setExtensionMethods()
@@ -106,6 +106,14 @@ class ContactFactry():
             msgLst.append('表示された球体の半径が複数有るため中止します!!\n' + msg)
 
         return '\n'.join(msgLst)
+    
+    # 桁数指定四捨五入
+    # https://qiita.com/sak_2/items/b2dd8bd1c4e4b0788e9a
+    def round_tol(self, x):
+        tol = str(_tolerance)
+        decimal = tol.find('.')
+        p=10**(len(tol)-decimal)
+        return (x*p*2+1)//2/p
 
     def initRootSketch(
         self) -> adsk.fusion.Sketch:
@@ -131,7 +139,7 @@ class ContactFactry():
         lst = []
         for brep in spheres:
             for face in brep.faces:
-                lst.append(face.geometry.radius)
+                lst.append(self.round_tol(face.geometry.radius))
 
         return lst
 
