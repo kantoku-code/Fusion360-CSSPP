@@ -1,4 +1,4 @@
-# FusionAPI_python Addin CreateCube var0.0.3
+# FusionAPI_python Addin CreateCube var0.0.4
 # Author-kantoku
 # Description-Create a cube with a side length of 100
 
@@ -6,7 +6,7 @@ import adsk.core, adsk.fusion, traceback
 from .Fusion360Utilities.Fusion360CommandBase import Fusion360CommandBase
 
 class CreateCube(Fusion360CommandBase):
-    def on_execute(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs, args, input_values):
+    def on_create(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs):
         cf = cubeFactry()
         cf.exec()
 
