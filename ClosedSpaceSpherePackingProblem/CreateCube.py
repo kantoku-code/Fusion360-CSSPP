@@ -1,4 +1,4 @@
-# FusionAPI_python Addin CreateCube var0.0.1
+# FusionAPI_python Addin CreateCube var0.0.3
 # Author-kantoku
 # Description-Create a cube with a side length of 100
 

@@ -6,7 +6,7 @@
 	"description":	{
 		"":	"Closed Space Sphere Packing Problem"
 	},
-	"version":	"0.0.1",
+	"version":	"0.0.3",
 	"runOnStartup":	false,
 	"supportedOS":	"windows|mac",
 	"editEnabled":	true
