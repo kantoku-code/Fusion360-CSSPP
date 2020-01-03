@@ -6,7 +6,7 @@ import adsk.core, adsk.fusion, traceback
 from .Fusion360Utilities.Fusion360CommandBase import Fusion360CommandBase
 
 class CreateCube(Fusion360CommandBase):
-    def on_create(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs):
+    def on_execute(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs, args, input_values):
         cf = cubeFactry()
         cf.exec()
 

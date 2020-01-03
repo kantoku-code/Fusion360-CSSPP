@@ -1,4 +1,4 @@
-#FusionAPI_python Addin Closed Space Sphere Packing Problem Ver0.0.1
+#FusionAPI_python Addin Closed Space Sphere Packing Problem Ver0.0.3
 #Author-kantoku
 #Description-Closed Space Sphere Packing Problem
 

@@ -1,4 +1,4 @@
-# FusionAPI_python Addin ContactCheck var0.0.2
+# FusionAPI_python Addin ContactCheck var0.0.3
 # Author-kantoku
 # Description-接触チェック
 
@@ -6,7 +6,7 @@ import adsk.core, adsk.fusion, traceback
 from .Fusion360Utilities.Fusion360CommandBase import Fusion360CommandBase
 
 class ContactCheck(Fusion360CommandBase):
-    def on_create(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs):
+    def on_execute(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs, args, input_values):
         cf = ContactFactry()
         cf.exec()
 
