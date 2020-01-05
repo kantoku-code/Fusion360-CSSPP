@@ -3,9 +3,15 @@
 これは、オートデスクソフトウェア「Fusion360」のアドインです。
 
 閉空間球充填問題(Closed Space Sphere Packing Problem)の取り組みをサポートします。
+問題の詳細は[こちら](https://forums.autodesk.com/t5/fusion-360-ri-ben-yu/wen-tidesu/td-p/9225621)をご覧ください。
+
 
 ## インストール:
-[こちら](https://knowledge.autodesk.com/ja/support/fusion-360/troubleshooting/caas/sfdcarticles/sfdcarticles/JPN/How-to-install-an-ADD-IN-and-Script-in-Fusion-360.html)の手順に従ってください。
+緑の「Clone or downlode」からダウンロードし解凍。「ClosedSpaceSpherePackingProblem」フォルダをアドインとして指定して下さい。
+
+指定方法は[こちら](https://knowledge.autodesk.com/ja/support/fusion-360/troubleshooting/caas/sfdcarticles/sfdcarticles/JPN/How-to-install-an-ADD-IN-and-Script-in-Fusion-360.html)の手順に従ってください。
+
+
 
 ## 使用法:
 
