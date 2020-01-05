@@ -1,4 +1,4 @@
-# FusionAPI_python Addin ContactCheck var0.0.4
+# FusionAPI_python Addin ContactCheck
 # Author-kantoku
 # Description-接触チェック
 
@@ -6,14 +6,18 @@ import adsk.core, adsk.fusion, traceback
 from .Fusion360Utilities.Fusion360CommandBase import Fusion360CommandBase
 
 class ContactCheck(Fusion360CommandBase):
-    def on_create(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs):
+    def on_destroy(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs, reason, input_values):
+        adsk.terminate()
+
+    def on_execute(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs, args, input_values):
+    # def on_create(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs):
         cf = ContactFactry()
         cf.exec()
 
-import adsk.core, adsk.fusion, traceback
 import math
 
 _tolerance = 0.01
+_debug = False
 class ContactFactry():
     def __init__(self):
         pass
@@ -44,6 +48,18 @@ class ContactFactry():
                 ui.messageBox(msg)
                 return
 
+            # チェックボディ名
+            msgBodies = self.getCheckBodiesName(cubes, spheres)
+
+            # debug
+            if _debug:
+                print('--showBodies--')
+                [print(bd.name) for bd in showBodies]
+                print('--cubes--')
+                [print(bd.name) for bd in cubes]
+                print('--spheres--')
+                [print(bd.name) for bd in spheres]
+
             # 交差を取得
             ints = []
             for sp in spheres:
@@ -55,7 +71,7 @@ class ContactFactry():
                     ints.extend(sp1.tryIntersect(sp2))
 
             if len(ints) < 1:
-                msg  = '交差はありません!'
+                msg  = '交差はありません!\n' + msgBodies
                 ui.messageBox(msg)
                 return
             
@@ -71,9 +87,9 @@ class ContactFactry():
             # 干渉チェック
             if skt.isCollision():
                 skt.name += '_is_Collision!!'
-                msg = '干渉有り!!'
+                msg = '干渉有り!!\n' + msgBodies
             else:
-                msg = '干渉無し!'
+                msg = '干渉無し!\n' + msgBodies
 
             # おしまい
             app.activeViewport.refresh()
@@ -82,6 +98,19 @@ class ContactFactry():
         except:
             if ui:
                 ui.messageBox('Failed:\n{}'.format(traceback.format_exc()))
+
+    def getCheckBodiesName(
+        self,
+        cubes :list,
+        spheres :list) -> str:
+
+        lst = ['\n***チェック対象***']
+        lst.append('--立方体--')
+        [lst.append(bd.name) for bd in cubes]
+        lst.append('--球体--')
+        [lst.append(bd.name) for bd in spheres]
+
+        return '\n'.join(lst)
 
     def canExecute(
         self,
@@ -258,9 +287,18 @@ def tryIntersect(
                 tgtEva :adsk.core.SurfaceEvaluator = tgtSurf.evaluator
                 interLst = tgtGeo.intersectWithSurface(spGeo)
 
+                # debug
+                if _debug:
+                    print('--TryIntersect cube--{}:{}-id({})'.format(self.name,tgt.name,tgtSurf.tempId))
+
                 if interLst.count > 0:
                     # 干渉
                     inter = interLst.item(0)
+
+                    # debug
+                    if _debug:
+                        print('  -collision-{}:{}-id({})'.format(self.name,tgt.name,tgtSurf.tempId))
+
                     crvEva = inter.evaluator
                     _, startParameter, endParameter = crvEva.getParameterExtents()
                     _, pnts = crvEva.getStrokes(startParameter, endParameter, _tolerance)
@@ -273,9 +311,18 @@ def tryIntersect(
 
                     if onPnts.count > 0:
                         ints.append(onPnts)
+                    else:
+                        # debug
+                        if _debug:
+                            print('  collision missing!')
                 else:
                     # 接触
                     minLength = measMgr.measureMinimumDistance(tgtGeo, spGeo.origin)
+
+                    # debug
+                    if _debug:
+                        print('  -contact-{}:{}-id({})'.format(self.name,tgt.name,tgtSurf.tempId))
+
                     if abs(minLength.value - spGeo.radius) < _tolerance:
                         inf = adsk.core.InfiniteLine3D.create(spGeo.origin, tgtGeo.normal)
                         pnt = tgtGeo.intersectWithLine(inf)
@@ -290,6 +337,10 @@ def tryIntersect(
                 tgtOri :adsk.core.Point3D = tgtGeo.origin
                 tgtRad = tgtGeo.radius
 
+                # debug
+                if _debug:
+                    print('--TryIntersect sphere--{}:{}-id({})'.format(self.name,tgt.name,tgtSurf.tempId))
+
                 if abs(spGeo.radius - tgtRad) > _tolerance:
                     return None
                 
@@ -297,15 +348,22 @@ def tryIntersect(
                 minLength = tgtOri.distanceTo(spOri)
                 if minLength > tgtRad * 2:
                     # 干渉なし
+                    if _debug:
+                        print('  -nothing-{}:{}-id({})'.format(self.name,tgt.name,tgtSurf.tempId))
                     continue
                 
                 if minLength < _tolerance:
                     # 同一
+                    if _debug:
+                        print('  -overlap-{}:{}-id({})'.format(self.name,tgt.name,tgtSurf.tempId))
                     continue
 
                 if abs(minLength - tgtRad * 2) < _tolerance:
                     # 接触
                     ints.append(spOri.midPoint(tgtOri))
+
+                    if _debug:
+                        print('  -contact-{}:{}-id({})'.format(self.name,tgt.name,tgtSurf.tempId))
                 else:
                     # 干渉
                     vec = spOri.asVector()
@@ -313,7 +371,14 @@ def tryIntersect(
                     ori = spOri.midPoint(tgtOri)
                     pln = adsk.core.Plane.create(ori, vec)
 
+                    if _debug:
+                        print('  -collision-{}:{}-id({})'.format(self.name,tgt.name,tgtSurf.tempId))
+
                     interLst = pln.intersectWithSurface(spGeo)
+                    if len(interLst) < 1:
+                        interLst = pln.intersectWithSurface(tgtGeo)
+                    if len(interLst) < 1:
+                        print('interLstErr!!')
                     [ints.append(c) for c in interLst]
 
     return ints

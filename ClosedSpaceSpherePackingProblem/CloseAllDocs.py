@@ -1,4 +1,4 @@
-# FusionAPI_python Addin CloseAllDocs var0.0.4
+# FusionAPI_python Addin CloseAllDocs
 # Author-kantoku
 # Description-Close all open files without saving
 
@@ -6,6 +6,9 @@ import adsk.core, traceback
 from .Fusion360Utilities.Fusion360CommandBase import Fusion360CommandBase
 
 class CloseAllDocs(Fusion360CommandBase):
+    def on_destroy(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs, reason, input_values):
+        adsk.terminate()
+        
     def on_create(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs):
         cf = closeAllDocFactry()
         cf.run()
