@@ -76,7 +76,7 @@ def run(context):
 
     # panel promote -index
     panelControls = panel.controls
-    pControl = panelControls.item(1)
+    pControl = panelControls.item(2)
     pControl.isPromoted = True
 
 
@@ -109,11 +109,6 @@ def initPanel(
         newPanel = allToolsTabPanels.itemById(panelName)
         if not newPanel:
             newPanel = allToolsTabPanels.add(panelName, panelName)
-
-        if newPanel:
-            newPanel.isVisible = True
-        else:
-            return
 
         return newPanel
     except:

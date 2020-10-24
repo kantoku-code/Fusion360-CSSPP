@@ -29,9 +29,10 @@ class closeAllDocFactry():
                 return
                 
             #逆からじゃないと全ては閉じない
-            [doc.close(False) for doc in docs[::-1]]
+            lst = [doc for doc in docs]
+            [doc.close(False) for doc in lst]
             
-            ui.messageBox('Done')
+            # ui.messageBox('Done')
         except:
             if ui:
                 ui.messageBox('Failed:\n{}'.format(traceback.format_exc()))
